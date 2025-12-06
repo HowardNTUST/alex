@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex Chen | AI Solutions Architect</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter for elegance, JetBrains Mono for code -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        techBlue: '#2563eb', // Royal Blue
+                        techIndigo: '#4f46e5',
+                        techDark: '#1e293b', // Slate 800
+                        techGray: '#64748b', // Slate 500
+                        bgLight: '#f8fafc', // Slate 50
+                    },
+                    fontFamily: {
+                        sans: ['"Inter"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
+                        'glow': '0 0 20px rgba(37, 99, 235, 0.2)',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #1e293b;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Particle Background Canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Gradient Text Utility */
+        .text-gradient {
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Gradient Background Utility */
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+        }
+
+        /* Frosted Glass - Light Theme */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Modern Section Title */
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #2563eb, #4f46e5);
+            border-radius: 2px;
+        }
+
+        /* Typewriter Cursor */
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            background-color: #2563eb;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Syntax Highlighting for Light Theme */
+        .code-keyword { color: #d73a49; } /* Red/Pink */
+        .code-string { color: #22863a; } /* Green */
+        .code-func { color: #6f42c1; } /* Purple */
+        .code-class { color: #005cc5; } /* Blue */
+        .code-comment { color: #6a737d; font-style: italic; } /* Gray */
+
+    </style>
+</head>
+<body class="antialiased selection:bg-techBlue selection:text-white">
+
+    <!-- Particle Background -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-panel transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold tracking-tight text-slate-800">
+                        Alex Chen<span class="text-techBlue">.AI</span>
+                    </span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-10">
+                        <a href="#home" class="text-sm font-medium text-slate-600 hover:text-techBlue transition-colors duration-300">首頁</a>
+                        <a href="#about" class="text-sm font-medium text-slate-600 hover:text-techBlue transition-colors duration-300">關於我</a>
+                        <a href="#solutions" class="text-sm font-medium text-slate-600 hover:text-techBlue transition-colors duration-300">解決方案</a>
+                        <a href="#projects" class="text-sm font-medium text-slate-600 hover:text-techBlue transition-colors duration-300">專案作品</a>
+                        <a href="#contact" class="px-6 py-2.5 rounded-full bg-slate-900 text-white text-sm font-medium hover:bg-techBlue transition-all duration-300 shadow-lg hover:shadow-glow transform hover:-translate-y-0.5">預約諮詢</a>
+                    </div>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-slate-600 hover:text-slate-900 p-2">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="hidden md:hidden bg-white border-b border-slate-100 shadow-lg" id="mobile-menu">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#home" class="block py-2 text-base font-medium text-slate-600 hover:text-techBlue">首頁</a>
+                <a href="#about" class="block py-2 text-base font-medium text-slate-600 hover:text-techBlue">關於我</a>
+                <a href="#solutions" class="block py-2 text-base font-medium text-slate-600 hover:text-techBlue">解決方案</a>
+                <a href="#projects" class="block py-2 text-base font-medium text-slate-600 hover:text-techBlue">專案作品</a>
+                <a href="#contact" class="block py-2 text-base font-medium text-techBlue font-semibold">預約諮詢</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center pt-20 relative overflow-hidden">
+        <!-- Abstract Decoration Background -->
+        <div class="absolute top-1/4 -right-20 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-float"></div>
+        <div class="absolute bottom-1/4 -left-20 w-96 h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-float" style="animation-delay: 2s"></div>
+
+        <div class="text-center z-10 px-4 max-w-5xl mx-auto">
+            <div class="inline-block mb-6 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-techBlue text-sm font-semibold tracking-wide uppercase shadow-sm">
+                AI Solutions Architect
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold mb-8 text-slate-900 leading-tight">
+                Empowering Business <br class="hidden md:block" />
+                with <span class="text-gradient">Intelligence</span>
+            </h1>
+            <p class="text-slate-500 max-w-2xl mx-auto mb-12 text-xl leading-relaxed font-light">
+                連結人類潛能與人工智慧。<br>
+                以宏觀架構思維，為您的企業打造不可取代的 AI 競爭力。
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#contact" class="px-8 py-4 rounded-lg bg-gradient-primary text-white font-semibold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    立即預約諮詢 <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                </a>
+                <a href="#projects" class="px-8 py-4 rounded-lg bg-white border border-slate-200 text-slate-700 font-semibold shadow-sm hover:bg-slate-50 hover:border-slate-300 transition-all duration-300">
+                    瀏覽實戰案例
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about" class="py-24 bg-bgLight/50 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <!-- Data Card -->
+                <div class="relative">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl transform rotate-3 opacity-10"></div>
+                    <div class="relative bg-white p-10 rounded-2xl shadow-soft border border-slate-100">
+                        <div class="flex items-center mb-8 pb-4 border-b border-slate-100">
+                            <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-techBlue text-xl mr-4">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800">Alex Chen</h3>
+                                <p class="text-sm text-slate-500">Professional Profile</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500 font-medium">從業年資</span>
+                                <span class="text-slate-900 font-bold">6 年</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500 font-medium">專注領域</span>
+                                <span class="text-slate-900 font-bold">企業 AI 轉型諮詢</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500 font-medium">專業認證</span>
+                                <span class="text-techBlue bg-blue-50 px-3 py-1 rounded-full text-xs font-bold">Azure AI Engineer</span>
+                            </div>
+                            
+                            <div class="pt-4 mt-4 border-t border-slate-100">
+                                <span class="text-slate-500 text-sm font-medium block mb-3">技術堆疊</span>
+                                <div class="flex gap-4 text-2xl text-slate-400">
+                                    <i class="fab fa-python hover:text-blue-600 transition-colors cursor-pointer" title="Python"></i>
+                                    <i class="fas fa-robot hover:text-orange-500 transition-colors cursor-pointer" title="LangChain"></i>
+                                    <i class="fab fa-microsoft hover:text-blue-400 transition-colors cursor-pointer" title="Azure"></i>
+                                    <i class="fas fa-database hover:text-green-600 transition-colors cursor-pointer" title="Vector DB"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Content -->
+                <div>
+                    <span class="text-techBlue font-bold tracking-wider uppercase text-sm mb-2 block">About Me</span>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-8 text-slate-900 leading-snug">
+                        跨越代碼與商業邊界的<br>AI 架構師
+                    </h2>
+                    <div class="prose prose-lg text-slate-600 leading-relaxed">
+                        <p class="mb-6">
+                            我是 Alex Chen，一位擁有 6 年實戰經驗的 AI 技術顧問與解決方案架構師。從全端開發起家，我深刻理解技術底層邏輯，並成功轉型專注於企業 AI 轉型諮詢。
+                        </p>
+                        <p class="mb-6">
+                            持有 <span class="font-semibold text-slate-800">Azure AI Engineer Associate</span> 認證，我擅長運用 Python 與 LangChain 構建高擴展性的 LLM 應用。
+                        </p>
+                        <p>
+                            在 AI 浪潮中，我不只交付代碼，更提供從策略規劃到落地執行的全方位思維。協助企業將複雜的 Prompt Engineering 與工作流自動化技術，轉化為具體的商業價值。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services / Solutions Section -->
+    <section id="solutions" class="py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="text-techBlue font-bold tracking-wider uppercase text-sm mb-2 block">Our Services</span>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-slate-900 section-title">AI Solutions</h2>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">
+                    智能賦能：打造您的 AI 數位護城河。透過客製化解決方案，讓生產力實現指數級增長。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="group p-8 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-soft transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center text-techBlue text-2xl mb-6 group-hover:bg-techBlue group-hover:text-white transition-colors">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-slate-900">GenAI Integration</h3>
+                    <p class="text-slate-500 mb-6 leading-relaxed">
+                        生成式 AI 導入、企業知識庫建置 (RAG)、LLM 應用開發。確保數據安全同時提升存取效率。
+                    </p>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li class="flex items-center"><i class="fas fa-check text-techBlue mr-2"></i>Custom RAG Systems</li>
+                        <li class="flex items-center"><i class="fas fa-check text-techBlue mr-2"></i>Chatbot Development</li>
+                    </ul>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="group p-8 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-soft transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-xl bg-indigo-50 flex items-center justify-center text-techIndigo text-2xl mb-6 group-hover:bg-techIndigo group-hover:text-white transition-colors">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-slate-900">Automation</h3>
+                    <p class="text-slate-500 mb-6 leading-relaxed">
+                        自動化腳本撰寫、個人工作流優化、AI 繪圖商用設計。針對重複性高的流程進行智慧化改造。
+                    </p>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li class="flex items-center"><i class="fas fa-check text-techIndigo mr-2"></i>Python Scripts</li>
+                        <li class="flex items-center"><i class="fas fa-check text-techIndigo mr-2"></i>Process Optimization</li>
+                    </ul>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="group p-8 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-soft transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-xl bg-teal-50 flex items-center justify-center text-teal-600 text-2xl mb-6 group-hover:bg-teal-600 group-hover:text-white transition-colors">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-slate-900">AI Empowerment</h3>
+                    <p class="text-slate-500 mb-6 leading-relaxed">
+                        企業員工 AI 賦能培訓、Prompt Engineering 教學諮詢。協助團隊建立正確的 AI 協作思維。
+                    </p>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li class="flex items-center"><i class="fas fa-check text-teal-600 mr-2"></i>Corporate Training</li>
+                        <li class="flex items-center"><i class="fas fa-check text-teal-600 mr-2"></i>Advanced Prompting</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="text-techBlue font-bold tracking-wider uppercase text-sm mb-2 block">Portfolio</span>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-slate-900 section-title">Open Source Resources</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group border border-slate-100">
+                    <div class="h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+                    <div class="p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-lg font-bold text-slate-900 group-hover:text-techBlue transition-colors">Meeting-Summarizer</h3>
+                            <i class="fab fa-github text-2xl text-slate-300 group-hover:text-slate-800 transition-colors"></i>
+                        </div>
+                        <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+                            基於 Whisper 模型與 GPT-4，自動將錄音檔轉錄並生成條列式會議紀錄。
+                        </p>
+                        <a href="https://github.com/alex/meeting-bot" target="_blank" class="inline-flex items-center text-sm font-semibold text-techBlue hover:text-techIndigo">
+                            View Source <i class="fas fa-arrow-right ml-2 text-xs transition-transform group-hover:translate-x-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group border border-slate-100">
+                    <div class="h-2 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
+                    <div class="p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-lg font-bold text-slate-900 group-hover:text-techIndigo transition-colors">Enterprise RAG Demo</h3>
+                            <i class="fas fa-cube text-2xl text-slate-300 group-hover:text-slate-800 transition-colors"></i>
+                        </div>
+                        <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+                            使用 LangChain 搭建的 RAG 系統，可上傳 PDF 並進行精準問答。
+                        </p>
+                        <a href="https://huggingface.co/spaces/alex/enterprise-rag-demo" target="_blank" class="inline-flex items-center text-sm font-semibold text-techIndigo hover:text-purple-600">
+                            Try Demo <i class="fas fa-arrow-right ml-2 text-xs transition-transform group-hover:translate-x-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group border border-slate-100">
+                    <div class="h-2 bg-gradient-to-r from-pink-500 to-rose-600"></div>
+                    <div class="p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-lg font-bold text-slate-900 group-hover:text-pink-600 transition-colors">Midjourney Prompts</h3>
+                            <i class="fas fa-palette text-2xl text-slate-300 group-hover:text-slate-800 transition-colors"></i>
+                        </div>
+                        <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+                            專為設計師開發的輔助工具，快速生成高品質的藝術風格 Prompt。
+                        </p>
+                        <a href="https://alex-ai-tools.com/prompt-gen" target="_blank" class="inline-flex items-center text-sm font-semibold text-pink-600 hover:text-rose-700">
+                            Launch Tool <i class="fas fa-arrow-right ml-2 text-xs transition-transform group-hover:translate-x-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section: IDE Style (Light Theme) -->
+    <section id="contact" class="py-24 bg-white relative">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">Let's Connect</h2>
+                <p class="text-slate-500 mt-2">Ready to optimize your workflow?</p>
+            </div>
+
+            <!-- Light Theme IDE -->
+            <div class="bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden font-mono text-sm">
+                <!-- Editor Header -->
+                <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-slate-300"></div>
+                        <div class="w-3 h-3 rounded-full bg-slate-300"></div>
+                        <div class="w-3 h-3 rounded-full bg-slate-300"></div>
+                    </div>
+                    <div class="flex space-x-4 text-xs text-slate-500 font-medium">
+                        <span class="text-slate-800 bg-white px-3 py-1 rounded shadow-sm">contact.py</span>
+                        <span class="hover:text-slate-800 cursor-pointer pt-1">config.json</span>
+                    </div>
+                    <div class="w-10"></div> <!-- Spacer -->
+                </div>
+                
+                <!-- Editor Body -->
+                <div class="flex p-6 md:p-8 bg-white">
+                    <!-- Line Numbers -->
+                    <div class="line-numbers text-slate-300 text-right pr-4 border-r border-slate-100 select-none font-mono text-xs leading-6">
+                        1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15
+                    </div>
+                    
+                    <!-- Code Content -->
+                    <div class="w-full pl-6 font-mono text-xs md:text-sm leading-6 text-slate-800">
+                        <div class="mb-2">
+                            <span class="code-keyword">class</span> <span class="code-class">AI_Consultant</span>:
+                        </div>
+                        <div class="pl-4 mb-2">
+                            <span class="code-keyword">def</span> <span class="code-func">__init__</span>(<span class="code-keyword">self</span>):
+                        </div>
+                        <div class="pl-8 mb-4">
+                            <span class="code-keyword">self</span>.name = <span class="code-string">"Alex Chen"</span><br>
+                            <span class="code-keyword">self</span>.status = <span class="code-string">"Open for Collaboration"</span>
+                        </div>
+                        
+                        <div class="pl-4 mb-2">
+                            <span class="code-keyword">def</span> <span class="code-func">connect</span>(<span class="code-keyword">self</span>):
+                        </div>
+                        <div class="pl-8 mb-4">
+                            <span class="code-comment"># Initialize secure connection protocol...</span>
+                        </div>
+
+                        <!-- Button Integration -->
+                        <div class="pl-8 mb-6">
+                            <a href="https://calendly.com/alex-ai-consulting" target="_blank" class="inline-flex items-center px-5 py-2 bg-slate-800 text-white rounded-md hover:bg-techBlue transition-colors duration-300 font-sans shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                <i class="fas fa-terminal mr-2 text-xs"></i> Execute_Consultation()
+                            </a>
+                        </div>
+
+                        <div class="mb-2">
+                            <span class="code-comment"># External libraries</span>
+                        </div>
+                        <div>
+                            <span class="code-keyword">import</span> <a href="https://github.com/alex" class="text-slate-800 hover:text-techBlue underline decoration-dotted">GitHub</a> <span class="code-keyword">as</span> portfolio
+                        </div>
+                        <div>
+                            <span class="code-keyword">import</span> <a href="https://linkedin.com/in/alex" class="text-slate-800 hover:text-techBlue underline decoration-dotted">LinkedIn</a> <span class="code-keyword">as</span> profile
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <p class="text-slate-400 text-sm">© 2025 Alex Chen. All systems operational.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script>
+        // Particle Network Effect (Elegant Tech Style)
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let particles = [];
+        
+        // Configuration
+        const particleCount = 60; // Less particles for cleaner look
+        const connectionDistance = 150;
+        const moveSpeed = 0.5;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * moveSpeed;
+                this.vy = (Math.random() - 0.5) * moveSpeed;
+                this.size = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off edges
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(148, 163, 184, 0.4)"; // Slate-400 with low opacity
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Update and draw particles
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                
+                // Draw connections
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < connectionDistance) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(37, 99, 235, ${0.15 - distance/connectionDistance * 0.15})`; // Blue tint, fading
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            resize();
+            initParticles();
+        });
+
+        // Initialize
+        resize();
+        initParticles();
+        animate();
+
+        // Navbar Blur Effect on Scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-sm');
+                navbar.classList.replace('bg-opacity-0', 'bg-opacity-80');
+            } else {
+                navbar.classList.remove('shadow-sm');
+            }
+        });
+    </script>
+</body>
+</html>
