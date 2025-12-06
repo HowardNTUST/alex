@@ -219,12 +219,13 @@
                     <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl transform rotate-3 opacity-10 group-hover:rotate-2 transition-transform duration-500"></div>
                     <div class="relative bg-white/90 backdrop-blur-xl p-10 rounded-2xl shadow-soft border border-white hover:shadow-xl transition-shadow duration-300">
                         <div class="flex items-center mb-8 pb-4 border-b border-slate-100">
-                            <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-techBlue text-xl mr-4">
-                                <i class="fas fa-user-circle"></i>
+                            <!-- 已更新：嵌入個人照片 ad.webp -->
+                            <div class="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md mr-6 flex-shrink-0 relative bg-slate-100">
+                                <img src="ad.webp" alt="Alex Chen" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-slate-400\'><i class=\'fas fa-image\'></i></div>'">
                             </div>
                             <div>
-                                <h3 class="text-xl font-bold text-slate-800">Alex Chen</h3>
-                                <p class="text-sm text-slate-500">Professional Profile</p>
+                                <h3 class="text-2xl font-bold text-slate-800">Alex Chen</h3>
+                                <p class="text-sm text-slate-500 font-medium tracking-wide">AI Solutions Architect</p>
                             </div>
                         </div>
                         
